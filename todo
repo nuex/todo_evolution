@@ -21,8 +21,18 @@ todo_today() {
   awk '/^\+ / {print}' $TODOS_DIR/$project
 }
 
+todo_bricks() {
+  project="$1"; shift
+  if [ ! "$project" ]; then
+    project=*
+  fi
+  awk '/^\+ / {n = split(FILENAME, p, "/"); \
+               print p[n] ": " $0; nextfile}' $TODOS_DIR/$project
+}
+
 case "${action}" in
   list) todo_list "$@" ;;
   today) todo_today "$@" ;;
+  bricks) todo_bricks "$@" ;;
   *) todo_all ;;
 esac
