@@ -1,0 +1,28 @@
+#!/bin/sh
+action="$1"; shift
+
+todo_all() {
+  todo_list
+}
+
+todo_list() {
+  project="$1"; shift
+  if [ ! "$project" ]; then
+    project=*
+  fi
+  awk '/^[-|+] / {print}; /^## COMP/ {nextfile}' $TODOS_DIR/$project
+}
+
+todo_today() {
+  project="$1"; shift
+  if [ ! "$project" ]; then
+    project=*
+  fi
+  awk '/^\+ / {print}' $TODOS_DIR/$project
+}
+
+case "${action}" in
+  list) todo_list "$@" ;;
+  today) todo_today "$@" ;;
+  *) todo_all ;;
+esac
