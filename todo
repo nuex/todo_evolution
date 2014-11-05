@@ -10,7 +10,7 @@ todo_list() {
   if [ ! "$project" ]; then
     project=*
   fi
-  awk '/^[-|+] / {print}; /^## COMP/ {nextfile}' $TODOS_DIR/$project
+  awk '/^[-|+] / {print}; /^## COMP/ {nextfile}' $TODOS_DIR/$project 2>/dev/null
 }
 
 todo_today() {
@@ -18,7 +18,8 @@ todo_today() {
   if [ ! "$project" ]; then
     project=*
   fi
-  awk '/^\+ / {print}' $TODOS_DIR/$project
+  awk '/^\+ / {n = split(FILENAME, p, "/"); \
+               print p[n] ": " $0}' $TODOS_DIR/$project 2>/dev/null
 }
 
 todo_bricks() {
@@ -27,7 +28,7 @@ todo_bricks() {
     project=*
   fi
   awk '/^\+ / {n = split(FILENAME, p, "/"); \
-               print p[n] ": " $0; nextfile}' $TODOS_DIR/$project
+               print p[n] ": " $0; nextfile}' $TODOS_DIR/$project 2>/dev/null
 }
 
 case "${action}" in
