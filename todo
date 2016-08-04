@@ -1,39 +1,45 @@
 #!/bin/sh
-action="$1"; shift
-
-todo_all() {
-  todo_list
+_todo_all() {
+  _todo_list
 }
 
-todo_list() {
-  project="$1"; shift
-  if [ ! "$project" ]; then
+_todo_list() {
+  project="$1"
+  if [ "$project" ]; then
+    shift
+  else
     project=*
   fi
   awk '/^[-|+] / {print}; /^## COMP/ {nextfile}' $TODOS_DIR/$project 2>/dev/null
 }
 
-todo_today() {
-  project="$1"; shift
-  if [ ! "$project" ]; then
+_todo_today() {
+  project="$1"
+  if [ "$project" ]; then
+    shift
+  else
     project=*
   fi
   awk '/^\+ / {n = split(FILENAME, p, "/"); \
                print p[n] ": " $0}' $TODOS_DIR/$project 2>/dev/null
 }
 
-todo_bricks() {
-  project="$1"; shift
-  if [ ! "$project" ]; then
+_todo_bricks() {
+  project="$1"
+  if [ "$project" ]; then
+    shift
+  else
     project=*
   fi
   awk '/^\+ / {n = split(FILENAME, p, "/"); \
                print p[n] ": " $0; nextfile}' $TODOS_DIR/$project 2>/dev/null
 }
 
+action="$1"
+[ "$action" ] && shift
 case "${action}" in
-  list) todo_list "$@" ;;
-  today) todo_today "$@" ;;
-  bricks) todo_bricks "$@" ;;
-  *) todo_all ;;
+  list) _todo_list "$@" ;;
+  today) _todo_today "$@" ;;
+  bricks) _todo_bricks "$@" ;;
+  *) _todo_all ;;
 esac
