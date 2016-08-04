@@ -10,7 +10,7 @@ _todo_list() {
   else
     project=*
   fi
-  awk '/^[-|+] / {print}; /^## COMP/ {nextfile}' $TODOS_DIR/$project 2>/dev/null
+  awk -f $TODOS_PATH/lib/list.awk $TODOS_DIR/$project 2>/dev/null
 }
 
 _todo_today() {
@@ -20,8 +20,7 @@ _todo_today() {
   else
     project=*
   fi
-  awk '/^\+ / {n = split(FILENAME, p, "/"); \
-               print p[n] ": " $0}' $TODOS_DIR/$project 2>/dev/null
+  awk -f $TODOS_PATH/lib/today.awk $TODOS_DIR/$project 2>/dev/null
 }
 
 _todo_bricks() {
@@ -31,8 +30,7 @@ _todo_bricks() {
   else
     project=*
   fi
-  awk '/^\+ / {n = split(FILENAME, p, "/"); \
-               print p[n] ": " $0; nextfile}' $TODOS_DIR/$project 2>/dev/null
+  awk -f $TODOS_PATH/lib/bricks.awk $TODOS_DIR/$project 2>/dev/null
 }
 
 action="$1"
